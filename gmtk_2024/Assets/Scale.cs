@@ -19,6 +19,10 @@ public class Scale : MonoBehaviour {
         if (isTriggered && ScalingTool.isCollecting) {
             health -= 1;
         }
+
+        Color startColor = spriteR.color;
+        startColor.g = health / 100f;
+        spriteR.color = startColor;
     }
 
     private void OnDestroy() {
