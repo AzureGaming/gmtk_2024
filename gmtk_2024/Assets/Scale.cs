@@ -26,7 +26,7 @@ public class Scale : MonoBehaviour {
     }
 
     private void OnDestroy() {
-        GameManager.scaleCount -= 1;
+        LevelManager.scaleCount -= 1;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {

@@ -13,10 +13,10 @@ public class UIManager : MonoBehaviour
     public TMP_Text scaleCount;
 
     void Update() {
-        timer.text = GameManager.roundTimer.ToString();
-        scaleCount.text = GameManager.scaleCount.ToString();
+        timer.text = LevelManager.roundTimer.ToString();
+        scaleCount.text = LevelManager.scaleCount.ToString();
 
-        if (GameManager.roundState == Level_State.Done) {
+        if (LevelManager.roundState == Level_State.Done) {
             levelEnded.gameObject.SetActive(true);
         } else {
             levelEnded.gameObject.SetActive(false);
