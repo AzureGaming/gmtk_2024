@@ -13,17 +13,18 @@ public enum Level_State {
 public class GameManager : MonoBehaviour {
     public static float mousePosX;
     public static float mousePosY;
-    public static bool canCollect;
     public static float roundTimer;
     public static Level_State roundState = Level_State.Not_Started;
+    public static int scaleCount;
+
+    [SerializeField]
+    public GameObject Level1;
 
     private void Start() {
         LevelOne();
     }
 
     void Update() {
-        canCollect = Input.GetMouseButton(0);
-
         Vector3 mousePos = Input.mousePosition;
         mousePosX = mousePos.x;
         mousePosY = mousePos.y;
@@ -31,6 +32,9 @@ public class GameManager : MonoBehaviour {
         if (roundState == Level_State.In_Progress) {
             if (roundTimer > 0f) {
                 roundTimer -= Time.deltaTime;
+                if (scaleCount == 0) {
+                    EndLevel();
+                }
             } else {
                 EndLevel();
             }
@@ -45,11 +49,13 @@ public class GameManager : MonoBehaviour {
 
     void LevelOne() {
         roundState = Level_State.In_Progress;
-        roundTimer = 5f;
+        roundTimer = 60f;
+        Instantiate(Level1, new Vector2(0, 0), Quaternion.identity);
+        scaleCount = FindObjectsOfType<Scale>().Length;
     }
 
     void EndLevel() {
-        roundTimer = 0f;
         roundState = Level_State.Done;
+        roundTimer = 0f;
     }
 }

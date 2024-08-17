@@ -9,9 +9,12 @@ public class UIManager : MonoBehaviour
     public TMP_Text timer; 
     [SerializeField]
     public TMP_Text levelEnded;
+    [SerializeField]
+    public TMP_Text scaleCount;
 
     void Update() {
         timer.text = GameManager.roundTimer.ToString();
+        scaleCount.text = GameManager.scaleCount.ToString();
 
         if (GameManager.roundState == Level_State.Done) {
             levelEnded.gameObject.SetActive(true);
