@@ -41,3 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Creature
+    uniqueID: 1137973355
+    locked: 0
+  - name: Scaler
+    uniqueID: 75430933
+    locked: 0
