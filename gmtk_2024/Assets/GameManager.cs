@@ -16,9 +16,12 @@ public class GameManager : MonoBehaviour {
     public static float roundTimer;
     public static Level_State roundState = Level_State.Not_Started;
     public static int scaleCount;
+    public static bool isHurt;
 
     [SerializeField]
     public GameObject Level1;
+    [SerializeField]
+    public ParticleSystem blood;
 
     private void Start() {
         LevelOne();
@@ -44,6 +47,10 @@ public class GameManager : MonoBehaviour {
             if (Input.GetMouseButtonDown(0)) {
                 LevelOne();
             }
+        }
+
+        if (isHurt) {
+            blood.Play();
         }
     }
 

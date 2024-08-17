@@ -48,3 +48,6 @@ TagManager:
   - name: Scaler
     uniqueID: 75430933
     locked: 0
+  - name: Effects
+    uniqueID: 2807054395
+    locked: 0
