@@ -4,29 +4,35 @@ using UnityEngine;
 
 public class Scale : MonoBehaviour {
     bool isTriggered;
-    int health = 100;
+    int health = 1;
+    int currentHealth;
     SpriteRenderer spriteR;
 
     private void Awake() {
         spriteR = GetComponent<SpriteRenderer>();
     }
 
+    private void Start() {
+        currentHealth = health;
+    }
+
     private void Update() {
-        if (health <= 0) {
+        if (currentHealth <= 0) {
             Destroy(gameObject);
         }
 
         if (isTriggered && ScalingTool.isCollecting) {
-            health -= 1;
+            currentHealth -= 1;
         }
 
         Color startColor = spriteR.color;
-        startColor.g = health / 100f;
+        startColor.g = currentHealth / health;
         spriteR.color = startColor;
     }
 
     private void OnDestroy() {
         LevelManager.scaleCount -= 1;
+        GameManager.score += 10;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {

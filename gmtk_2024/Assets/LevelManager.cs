@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum Level_State {
@@ -25,9 +24,13 @@ public class LevelManager : MonoBehaviour {
     [SerializeField]
     public Transform tutorialStartPos;
 
-    GameObject spawnedObj;
+    List<GameObject> objPool;
     Vector3 startLocalScale;
     Color startColor;
+
+    private void Awake() {
+        objPool = new List<GameObject>();
+    }
 
     // Start is called before the first frame update
     void Start() {
@@ -40,7 +43,6 @@ public class LevelManager : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
-
         if (roundState == Level_State.In_Progress) {
             if (roundTimer > 0f) {
                 roundTimer -= Time.deltaTime;
@@ -51,13 +53,10 @@ public class LevelManager : MonoBehaviour {
                 EndLevel();
             }
         }
+    }
 
-        if (roundState == Level_State.Done) {
-            if (Input.GetMouseButtonDown(0)) {
-                LevelOne();
-            }
-        }
-
+    public void LoadNextLevel() {
+        StartCoroutine(LevelOne());
     }
 
     IEnumerator Tutorial() {
@@ -91,30 +90,30 @@ public class LevelManager : MonoBehaviour {
         roundTimer = 60f;
 
         // todo: gt accurate dimensions
-        spawnedObj = Instantiate(Level1, Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f)), Quaternion.identity);
+        objPool.Add(Instantiate(Level1, Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f)), Quaternion.identity));
+        objPool.Add(Instantiate(Level1_2, Camera.main.ViewportToWorldPoint(new Vector3(2, 0.5f, 1f)), Quaternion.identity));
         scaleCount = FindObjectsOfType<Scale>().Length;
-        startLocalScale = spawnedObj.transform.localScale;
-        startColor = spawnedObj.GetComponent<SpriteRenderer>().color;
+        startLocalScale = objPool[0].transform.localScale;
+        startColor = objPool[0].GetComponent<SpriteRenderer>().color;
 
-        yield return StartCoroutine(ToMiddle(2f));
-        yield return StartCoroutine(GoToBackground(Camera.main.ViewportToWorldPoint(new Vector3(0.75f, 0.75f, 1f))));
-        yield return StartCoroutine(MoveOffRight(2));
+        yield return StartCoroutine(MoveOffRight(5f,objPool[0]));
+        yield return StartCoroutine(MoveOffLeft(5f, objPool[1]));
+        objPool[0].transform.position = Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f));
+        yield return StartCoroutine(MoveOffRight(5f, objPool[0]));
 
-        GameObject temp = Instantiate(Level1_2, Camera.main.ViewportToWorldPoint(new Vector3(3, 0.5f, 1f)), Quaternion.identity);
-        Destroy(spawnedObj);
-        spawnedObj = temp;
-
-        yield return StartCoroutine(ToMiddle(2f));
+        roundTimer = 0f;
+        //yield return StartCoroutine(GoToBackground(Camera.main.ViewportToWorldPoint(new Vector3(0.75f, 0.75f, 1f))));
     }
 
 
     void EndLevel() {
         roundState = Level_State.Done;
         roundTimer = 0f;
+        ClearPool();
     }
 
-    IEnumerator GoToBackground(Vector2 endPos) {
-        Color newColor = spawnedObj.GetComponent<SpriteRenderer>().color;
+    IEnumerator GoToBackground(Vector2 endPos, GameObject obj) {
+        Color newColor = obj.GetComponent<SpriteRenderer>().color;
         newColor.a = 0.5f;
         Vector2 newScale = new Vector2(5f, 5f);
         Vector2 startPos = transform.position;
@@ -123,9 +122,9 @@ public class LevelManager : MonoBehaviour {
         float time = 1f;
         while (timeElapsed < time) {
             timeElapsed += Time.deltaTime;
-            spawnedObj.GetComponent<SpriteRenderer>().color = Color.Lerp(startColor, newColor, ( timeElapsed / time ));
-            spawnedObj.transform.localScale = Vector2.Lerp(startLocalScale, newScale, ( timeElapsed / time ));
-            spawnedObj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            obj.GetComponent<SpriteRenderer>().color = Color.Lerp(startColor, newColor, ( timeElapsed / time ));
+            obj.transform.localScale = Vector2.Lerp(startLocalScale, newScale, ( timeElapsed / time ));
+            obj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
             yield return null;
         }
     }
@@ -134,30 +133,45 @@ public class LevelManager : MonoBehaviour {
         float timeElapsed = 0f;
         // time should depend ons creen size
         float time = 5f;
-        Vector2 startPos = spawnedObj.transform.position;
+        Vector2 startPos = objPool[0].transform.position;
         Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(2, 0.5f));
 
         while (timeElapsed < time) {
             timeElapsed += Time.deltaTime;
-            spawnedObj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            objPool[0].transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
             yield return null;
         }
-        spawnedObj.transform.position = endPos;
+        objPool[0].transform.position = endPos;
     }
 
-    IEnumerator MoveOffRight(float time) {
+    IEnumerator MoveOffRight(float time, GameObject obj) {
         float timeElapsed = 0f;
         // time should depend ons creen size
-        Vector2 startPos = spawnedObj.transform.position;
-        Vector2 viewPortPos = Camera.main.WorldToViewportPoint(spawnedObj.transform.position);
+        Vector2 startPos = obj.transform.position;
+        Vector2 viewPortPos = Camera.main.WorldToViewportPoint(obj.transform.position);
         Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(3, viewPortPos.y));
 
         while (timeElapsed < time) {
             timeElapsed += Time.deltaTime;
-            spawnedObj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            obj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
             yield return null;
         }
-        spawnedObj.transform.position = endPos;
+        obj.transform.position = endPos;
+    }
+
+    IEnumerator MoveOffLeft(float time, GameObject obj) {
+        float timeElapsed = 0f;
+        // time should depend ons creen size
+        Vector2 startPos = obj.transform.position;
+        Vector2 viewPortPos = Camera.main.WorldToViewportPoint(obj.transform.position);
+        Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(-3, viewPortPos.y));
+
+        while (timeElapsed < time) {
+            timeElapsed += Time.deltaTime;
+            obj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            yield return null;
+        }
+        obj.transform.position = endPos;
     }
 
     IEnumerator ToMiddle(float time) {
@@ -168,9 +182,17 @@ public class LevelManager : MonoBehaviour {
 
         while (timeElapsed < time) {
             timeElapsed += Time.deltaTime;
-            spawnedObj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            objPool[0].transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
             yield return null;
         }
-        spawnedObj.transform.position = endPos;
+        objPool[0].transform.position = endPos;
+    }
+
+    void ClearPool() {
+        foreach(GameObject obj in objPool) {
+            Destroy(obj);
+        }
+
+        objPool.Clear();
     }
 }
