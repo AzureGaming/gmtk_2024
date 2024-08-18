@@ -6,6 +6,7 @@ public enum Level_State {
     Not_Started,
     In_Progress,
     Done,
+    Game_Over
 }
 
 
@@ -47,10 +48,10 @@ public class LevelManager : MonoBehaviour {
             if (roundTimer > 0f) {
                 roundTimer -= Time.deltaTime;
                 if (scaleCount == 0) {
-                    EndLevel();
+                    CompleteLevel();
                 }
             } else {
-                EndLevel();
+                GameOver();
             }
         }
     }
@@ -87,7 +88,7 @@ public class LevelManager : MonoBehaviour {
 
     IEnumerator LevelOne() {
         roundState = Level_State.In_Progress;
-        roundTimer = 60f;
+        roundTimer = 5f;
 
         // todo: gt accurate dimensions
         objPool.Add(Instantiate(Level1, Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f)), Quaternion.identity));
@@ -96,18 +97,26 @@ public class LevelManager : MonoBehaviour {
         startLocalScale = objPool[0].transform.localScale;
         startColor = objPool[0].GetComponent<SpriteRenderer>().color;
 
-        yield return StartCoroutine(MoveOffRight(8f,objPool[0]));
+        yield return StartCoroutine(MoveOffRight(8f, objPool[0]));
         yield return StartCoroutine(MoveOffLeft(8f, objPool[1]));
         objPool[0].transform.position = Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f));
         yield return StartCoroutine(MoveOffRight(8f, objPool[0]));
 
         roundTimer = 0f;
+
+        GameOver();
         //yield return StartCoroutine(GoToBackground(Camera.main.ViewportToWorldPoint(new Vector3(0.75f, 0.75f, 1f))));
     }
 
 
-    void EndLevel() {
+    void CompleteLevel() {
         roundState = Level_State.Done;
+        roundTimer = 0f;
+        ClearPool();
+    }
+
+    void GameOver() {
+        roundState = Level_State.Game_Over;
         roundTimer = 0f;
         ClearPool();
     }
@@ -189,7 +198,7 @@ public class LevelManager : MonoBehaviour {
     }
 
     void ClearPool() {
-        foreach(GameObject obj in objPool) {
+        foreach (GameObject obj in objPool) {
             Destroy(obj);
         }
 
