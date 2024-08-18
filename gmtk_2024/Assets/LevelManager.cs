@@ -96,10 +96,10 @@ public class LevelManager : MonoBehaviour {
         startLocalScale = objPool[0].transform.localScale;
         startColor = objPool[0].GetComponent<SpriteRenderer>().color;
 
-        yield return StartCoroutine(MoveOffRight(5f,objPool[0]));
-        yield return StartCoroutine(MoveOffLeft(5f, objPool[1]));
+        yield return StartCoroutine(MoveOffRight(8f,objPool[0]));
+        yield return StartCoroutine(MoveOffLeft(8f, objPool[1]));
         objPool[0].transform.position = Camera.main.ViewportToWorldPoint(new Vector3(-2, 0.5f, 1f));
-        yield return StartCoroutine(MoveOffRight(5f, objPool[0]));
+        yield return StartCoroutine(MoveOffRight(8f, objPool[0]));
 
         roundTimer = 0f;
         //yield return StartCoroutine(GoToBackground(Camera.main.ViewportToWorldPoint(new Vector3(0.75f, 0.75f, 1f))));

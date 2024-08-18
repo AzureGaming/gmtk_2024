@@ -9,11 +9,18 @@ public class GameManager : MonoBehaviour {
     public static bool isHurt;
     public static int score;
 
+
     [SerializeField]
     public ParticleSystem blood;
+    [SerializeField]
+    public ParticleSystem scaleParticles;
 
     private void Start() {
         Cursor.visible = false;
+
+        Scale.onCollect += () => {
+            scaleParticles.Play();
+        };
     }
 
     void Update() {
