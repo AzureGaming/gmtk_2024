@@ -42,7 +42,7 @@ public class LevelManager : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        currentLevel = Level.One;
+        currentLevel = Level.Zero;
 
         if (enableTutorial) {
             StartCoroutine(Tutorial());
