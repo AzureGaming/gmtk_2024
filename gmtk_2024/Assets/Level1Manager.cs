@@ -99,46 +99,17 @@ public class Level1Manager: LevelManager {
         creature.LoadStage(0);
         yield return StartCoroutine(creature.MoveOffRight(10f));
 
-        //roundTimer = 0f;
+        roundTimer = 0f;
     }
 
 
     void CompleteLevel() {
-        //StopAllCoroutines();
-        //Destroy(creature.gameObject);
         roundState = Level_State.Done;
         roundTimer = 0f;
     }
 
     void GameOver() {
-
-        //StopAllCoroutines();
-        //Destroy(creature.gameObject);
         roundState = Level_State.Game_Over;
         roundTimer = 0f;
     }
-
-    //IEnumerator GoToForeground(float time, GameObject obj) {
-    //    Color newColor = obj.GetComponent<SpriteRenderer>().color;
-    //    newColor.a = 1f;
-    //    Color currentColor = obj.GetComponent<SpriteRenderer>().color;
-    //    Vector2 startPos = transform.position;
-    //    Vector2 startScale = transform.localScale;
-    //    Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.5f));
-
-    //    objPool[0].GetComponent<Animator>().SetFloat("movementY", -1);
-
-    //    float timeElapsed = 0f;
-    //    while (timeElapsed < time) {
-    //        timeElapsed += Time.deltaTime;
-    //        obj.GetComponent<SpriteRenderer>().color = Color.Lerp(currentColor, newColor, ( timeElapsed / time ));
-    //        obj.transform.localScale = Vector2.Lerp(startScale, startLocalScale, ( timeElapsed / time ));
-    //        obj.transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
-    //        yield return null;
-    //    }
-
-    //    objPool[0].GetComponent<Animator>().SetFloat("movementY", 0);
-    //}
-
-
 }

@@ -4,11 +4,6 @@ using UnityEngine;
 
 
 public class Level2Manager : LevelManager {
-
-    [SerializeField]
-    public GameObject Level1;
-    bool afterStart;
-
     Creature creature;
 
     // Start is called before the first frame update
@@ -32,16 +27,11 @@ public class Level2Manager : LevelManager {
 
 
     void CompleteLevel() {
-        //StopAllCoroutines();
-        //Destroy(creature.gameObject);
         roundState = Level_State.Done;
         roundTimer = 0f;
     }
 
     void GameOver() {
-
-        //StopAllCoroutines();
-        //Destroy(creature.gameObject);
         roundState = Level_State.Game_Over;
         roundTimer = 0f;
     }
@@ -52,5 +42,13 @@ public class Level2Manager : LevelManager {
         creature = FindObjectOfType<Creature>();
         roundState = Level_State.In_Progress;
         yield return StartCoroutine(creature.ToMiddle(5f));
+        creature.LoadStage(1);
+        yield return StartCoroutine(creature.GoToBackground(2f));
+        yield return StartCoroutine(creature.SmokeBreak(2f));
+        yield return StartCoroutine(creature.GoToForeground(2f));
+        creature.LoadStage(0);
+        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(creature.MoveOffRight(5f));
+        roundTimer = 0f;
     }
 }

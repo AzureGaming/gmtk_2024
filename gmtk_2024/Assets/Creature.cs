@@ -106,7 +106,7 @@ public class Creature : MonoBehaviour {
         Vector2 viewPortPos = Camera.main.WorldToViewportPoint(transform.position);
         Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(viewPortPos.x, 0.75f));
 
-        anim.SetFloat("movementY", 1);
+        anim.SetBool("isMovingBack", true);
 
         float timeElapsed = 0f;
         while (timeElapsed < time) {
@@ -117,6 +117,27 @@ public class Creature : MonoBehaviour {
             yield return null;
         }
 
-        anim.SetFloat("movementY", 0);
+        anim.SetBool("isMovingBack", false);
+    }
+
+    public IEnumerator GoToForeground(float time) {
+        Color newColor = spriteR.color;
+        newColor.a = 1f;
+        Vector2 currentScale = transform.localScale;
+        Vector2 startPos = transform.position;
+        Vector2 endPos = Camera.main.ViewportToWorldPoint(new Vector2(0.5f, 0.5f));
+
+        anim.SetBool("isMovingForward", true);
+
+        float timeElapsed = 0f;
+        while (timeElapsed < time) {
+            timeElapsed += Time.deltaTime;
+            spriteR.color = Color.Lerp(startColor, newColor, ( timeElapsed / time ));
+            transform.localScale = Vector2.Lerp(currentScale, startScale, ( timeElapsed / time ));
+            transform.position = Vector2.Lerp(startPos, endPos, ( timeElapsed / time ));
+            yield return null;
+        }
+
+        anim.SetBool("isMovingForward", false);
     }
 }
