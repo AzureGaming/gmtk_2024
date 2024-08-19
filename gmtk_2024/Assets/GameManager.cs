@@ -10,18 +10,27 @@ public class GameManager : MonoBehaviour {
     public static int score;
 
 
-     ParticleSystem blood;
-     ParticleSystem scaleParticles;
+    ParticleSystem blood;
+    ParticleSystem scaleParticles;
 
     private void Start() {
         DontDestroyOnLoad(gameObject);
         Cursor.visible = false;
         blood = GameObject.FindGameObjectWithTag("blood").GetComponent<ParticleSystem>();
         scaleParticles = GameObject.FindGameObjectWithTag("scaleParticles").GetComponent<ParticleSystem>();
+    }
 
-        Scale.onCollect += () => {
-            scaleParticles.Play();
-        };
+    private void OnEnable() {
+        Scale.onCollect += PlayBlood;
+    }
+
+    private void OnDisable() {
+        Scale.onCollect -= PlayBlood;
+    }
+
+    void PlayBlood() {
+        scaleParticles.Play();
+
     }
 
     void Update() {

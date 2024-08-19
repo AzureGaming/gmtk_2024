@@ -22,12 +22,14 @@ public class HurtArea : MonoBehaviour {
     private void Update() {
         if (isTriggered && ScalingTool.isCollecting) {
             GameManager.isHurt = true;
+            FindObjectOfType<Creature>().GetComponent<Animator>().SetBool("isHurt", true);
             spriteR.color = Color.red;
             selfSpriteR.color = Color.red;
         } else {
             GameManager.isHurt = false;
             spriteR.color = startColor;
             selfSpriteR.color = selfStartColor;
+            FindObjectOfType<Creature>().GetComponent<Animator>().SetBool("isHurt", false);
         }
     }
 

@@ -27,11 +27,17 @@ public class Creature : MonoBehaviour {
     }
 
     public void LoadNextStage() {
+        if (stages.Count < 1) {
+            return;
+        }
         currentStage++;
         stages[currentStage].gameObject.SetActive(true);
     }
 
     public void LoadStage(int stage) {
+        if (stages.Count < 1) {
+            return;
+        }
         for (int i = 0; i < stages.Count; i++) {
             stages[i].SetActive(i == stage);
         }
