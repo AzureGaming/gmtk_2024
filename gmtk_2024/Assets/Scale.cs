@@ -25,6 +25,7 @@ public class Scale : MonoBehaviour {
         }
 
         if (isTriggered && ScalingTool.isCollecting) {
+            FindObjectOfType<AudioManager>().PlayScaling();
             currentHealth -= 1;
             onCollect.Invoke();
         }

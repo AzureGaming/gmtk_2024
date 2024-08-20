@@ -20,14 +20,6 @@ public enum Level {
 public class Level1Manager: LevelManager {
     [SerializeField]
     public bool enableTutorial;
-    [SerializeField]
-    public GameObject Level1;
-    [SerializeField]
-    public GameObject Level1_2;
-    [SerializeField]
-    public GameObject tutorialFish1;
-    [SerializeField]
-    public Transform tutorialStartPos;
 
     Creature creature;
 
@@ -89,7 +81,7 @@ public class Level1Manager: LevelManager {
         roundTimer = 30f;
 
         // todo: gt accurate dimensions
-        creature = Instantiate(Level1, Camera.main.ViewportToWorldPoint(new Vector3(-0.5f, 0.5f, 1f)), Quaternion.identity).GetComponent<Creature>();
+        creature = FindObjectOfType<Creature>();
 
         yield return StartCoroutine(creature.MoveOffRight(10f));
         creature.Flip();
