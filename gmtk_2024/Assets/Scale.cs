@@ -7,7 +7,7 @@ public class Scale : MonoBehaviour {
     public static event OnCollect onCollect;
 
     bool isTriggered;
-    int health = 1;
+    int health = 50;
     int currentHealth;
     SpriteRenderer spriteR;
 

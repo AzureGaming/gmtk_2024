@@ -78,18 +78,19 @@ public class Level1Manager: LevelManager {
 
     IEnumerator RunLevel() {
         roundState = Level_State.In_Progress;
-        roundTimer = 30f;
+        roundTimer = 60f;
 
         // todo: gt accurate dimensions
         creature = FindObjectOfType<Creature>();
 
-        yield return StartCoroutine(creature.MoveOffRight(10f));
+        yield return StartCoroutine(creature.ToMiddle(5f));
+        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(creature.MoveOffRight(5f));
         creature.Flip();
         creature.LoadStage(1);
-        yield return StartCoroutine(creature.MoveOffLeft(10f));
-        creature.Flip();
-        creature.LoadStage(0);
-        yield return StartCoroutine(creature.MoveOffRight(10f));
+        yield return StartCoroutine(creature.ToMiddle(5f));
+        yield return new WaitForSeconds(2f);
+        yield return StartCoroutine(creature.MoveOffLeft(5f));
 
         roundTimer = 0f;
     }
